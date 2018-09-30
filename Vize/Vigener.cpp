@@ -83,7 +83,7 @@ std::string Vigener::selectText(std::string text, int step, int start)
 
 double Vigener::calculateIndexOfCoincidence(std::string text) 
 {
-	double index = statistics.—alculateIndexOfCoincidence(text);
+	double index = statistics.calculateIndexOfCoincidence(text);
 	return index;
 }
 
@@ -281,7 +281,7 @@ std::string Vigener::changeLetters(std::string text, int shift, int stride, int 
 		{
 			i++;
 		}
-		return text;	//Ó‰ËÌ ¯‡„
+		return text;	//√Æ√§√®√≠ √∏√†√£
 	}
 }
 
