@@ -8,26 +8,31 @@
 class Vigener
 {
 private:
-	Statistics statistics;
+	
 
 public:
-					Vigener();
-					~Vigener();
+						
+	Statistics statistics;			
+									Vigener();
+									~Vigener();
 
-	std::string		readFromFile(const char* filename);
-	std::string		encrypt(std::string text, std::string key);
-	std::string		decrypt(std::string text, std::string key);
-	std::string		selectText(std::string text, int step, int start);
-	std::string		changeLetters(std::string text, int shift, int stride, int start);
-	double			calculateIndexOfCoincidence(std::string text);
-	int				findKeyLength(std::string entext);
-	int				findShift(std::string text, int step);
-	int				findMaxValue(std::map<int, int> divs);
-	int				findMaxDifference(std::map<int, double> divs);
-	int				gcd(int x, int y);
-	char			shiftForward(char letter, int shift);
-	int				Checking(std::string entext);
-	
+	std::vector<unsigned char>		readFromFile(const char* filename);
+	std::vector<unsigned char>		encrypt(std::vector<unsigned char> text, std::vector<unsigned char> key);
+	std::vector<unsigned char>		decrypt(std::vector<unsigned char> text, std::vector<unsigned char> key);
+	std::vector<unsigned char>		selectText(std::vector<unsigned char> text, int step, int start);
+	std::vector<unsigned char>		changeLetters(std::vector<unsigned char> text, int shift, int step, int start);
+	double							calculateIndexOfCoincidence(std::vector<unsigned char> text);
+	int								findKeyLength(std::vector<unsigned char> entext);
+	int								findMaxValue(std::map<int, int> divs);
+	int								findMaxDifference(std::map<int, double> divs);
+	int								gcd(int x, int y);
+
+	unsigned char					shiftForward(unsigned char letter, unsigned char shift);
+	unsigned char					shiftBack(unsigned char letter, unsigned char shift);
+	unsigned char					getModulus(unsigned char a, int modulus);
+	std::vector<unsigned char>		solveEndrypted(std::vector<unsigned char> entext, int keysize);
+
+	char							findShiftUsingStatisticsFile(const char* filename);
 	
 	
 };
