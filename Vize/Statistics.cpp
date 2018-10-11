@@ -33,6 +33,7 @@ std::map<unsigned char, int> Statistics::calculateStatistics(std::vector<unsigne
 	return map;
 }
 
+<<<<<<< HEAD
 double Statistics::calculateIndexOfCoincidence(std::vector<unsigned char> text)
 =======
 double Statistics::CalculateIndexOfCoincidence(std::vector<unsigned char> text)
