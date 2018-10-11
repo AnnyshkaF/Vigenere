@@ -59,7 +59,7 @@ std::map<unsigned char, int> Statistics::CalculateStatisticsInOrder(std::vector<
 	return map;
 }
 
-double Statistics::ÑalculateIndexOfCoincidence(std::vector<unsigned char> text)
+double Statistics::CalculateIndexOfCoincidence(std::vector<unsigned char> text)
 {
 	auto map = CalculateStatistics(text);
 	float index = 0;
