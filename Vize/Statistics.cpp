@@ -33,11 +33,7 @@ std::map<unsigned char, int> Statistics::calculateStatistics(std::vector<unsigne
 	return map;
 }
 
-<<<<<<< HEAD
 double Statistics::calculateIndexOfCoincidence(std::vector<unsigned char> text)
-=======
-double Statistics::CalculateIndexOfCoincidence(std::vector<unsigned char> text)
->>>>>>> 91e5fd1e8dc62836a3df4de068f94547e2606f7c
 {
 	auto map = calculateStatistics(text);
 	double index = 0;

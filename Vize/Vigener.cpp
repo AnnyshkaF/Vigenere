@@ -149,11 +149,7 @@ std::vector<unsigned char> Vigener::selectText(std::vector<unsigned char> text, 
 
 double Vigener::calculateIndexOfCoincidence(std::vector<unsigned char> text)
 {
-<<<<<<< HEAD
 	double index = statistics.calculateIndexOfCoincidence(text);
-=======
-	double index = statistics.CalculateIndexOfCoincidence(text);
->>>>>>> 91e5fd1e8dc62836a3df4de068f94547e2606f7c
 	return index;
 }
 
