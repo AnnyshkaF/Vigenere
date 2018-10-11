@@ -9,8 +9,6 @@ void showVector(std::vector<unsigned char> v)
 	for (auto i : v)
 	{
 		if (i == '\r') continue;
-		//if (i == '\n') continue;
-		//if (i == '\t') continue;
 		std::cout << i;
 	}
 	std::cout << std::endl;
@@ -95,7 +93,7 @@ std::vector<unsigned char> Vigener::selectText(std::vector<unsigned char> text, 
 
 double Vigener::calculateIndexOfCoincidence(std::vector<unsigned char> text)
 {
-	double index = statistics.caalculateIndexOfCoincidence(text);
+	double index = statistics.ÑalculateIndexOfCoincidence(text);
 	return index;
 }
 
@@ -258,6 +256,58 @@ unsigned char Vigener::getModulus(unsigned char a, int modulus)
 	return a;
 }
 
+
+
+std::vector<unsigned char> Vigener::solveEndryptedUsingFrequenyAnalyse(const char* filestat, std::vector<unsigned char> entext, int keysize)
+{
+	std::multimap<int, unsigned char> stat_freqs;
+	std::multimap<int, unsigned char> en_freqs;
+	std::vector<unsigned char> statText = readFromFile(filestat);
+	std::map<unsigned char, int> stat = statistics.CalculateStatistics(statText);
+	for (auto it = stat.begin(); it != stat.end(); ++it)
+	{
+		stat_freqs.insert(std::make_pair(it->second, it->first));
+	}
+	
+	std::vector<unsigned char> key;
+	for (int i = 0; i < keysize; ++i)
+	{
+		std::vector<unsigned char> currentText = selectText(entext, keysize, i);
+		std::map<unsigned char, int> stats = statistics.CalculateStatistics(currentText);
+		//selected_text statistics
+		for (auto it = stats.begin(); it != stats.end(); ++it)
+		{
+			en_freqs.insert(std::make_pair(it->second, it->first));
+		}
+		//(old letter , new letter)
+		std::multimap<unsigned char, unsigned char> swap;
+		auto enit = en_freqs.begin();
+		auto it = stat_freqs.begin();
+		for (; it != stat_freqs.end(); ++it)
+		{
+			swap.insert(std::make_pair(enit->second, it->second));	
+			enit++;
+		}
+		it--; enit--;
+		key.push_back(statistics.getLetter(getModulus(statistics.getLetterNumber(enit->second) - statistics.getLetterNumber(it->second), statistics.alpha.size())));
+		//swapping
+		for (int j = i; j < entext.size(); j += keysize)
+		{
+			if (j > entext.size()) 
+			{
+				break;
+			}
+			entext[j] = swap.find(entext[j])->second;
+		}
+		swap.clear();
+		en_freqs.clear();
+	}
+	
+	std::cout << std::endl << "Key = ";
+	showVector(key);
+	return entext;
+}
+
 std::vector<unsigned char> Vigener::changeLetters(std::vector<unsigned char> text, int shift, int step, int start)
 {
 	for (int i = start; i < text.size(); i += step)
@@ -271,7 +321,7 @@ std::vector<unsigned char> Vigener::changeLetters(std::vector<unsigned char> tex
 	return text;
 }
 
-char Vigener::findShiftUsingStatisticsFile(const char* filename) 
+char Vigener::findShiftUsingStatisticsFile(const char* filename)
 {
 	std::vector<unsigned char> statText = readFromFile(filename);
 	std::map<unsigned char, int> stat = statistics.CalculateStatistics(statText);
@@ -286,9 +336,9 @@ char Vigener::findShiftUsingStatisticsFile(const char* filename)
 	return max->first;
 }
 
-std::vector<unsigned char> Vigener::solveEndrypted(std::vector<unsigned char> entext, int keysize)
+std::vector<unsigned char> Vigener::solveEndrypted(const char* filestat, std::vector<unsigned char> entext, int keysize)
 {
-	unsigned char max = findShiftUsingStatisticsFile("C:/Users/Anna/Desktop/ciphers/stat1.txt");
+	unsigned char max = findShiftUsingStatisticsFile(filestat);
 	std::vector<unsigned char> key;
 	for (int i = 0; i < keysize; ++i)
 	{

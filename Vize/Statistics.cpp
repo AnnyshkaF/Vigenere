@@ -59,22 +59,15 @@ std::map<unsigned char, int> Statistics::CalculateStatisticsInOrder(std::vector<
 	return map;
 }
 
-double Statistics::CalculateIndexOfCoincidence(std::vector<unsigned char> text)
+double Statistics::ÑalculateIndexOfCoincidence(std::vector<unsigned char> text)
 {
 	auto map = CalculateStatistics(text);
 	float index = 0;
 	int size = text.size();
 	for (auto it = map.begin(); it != map.end(); ++it)
 	{
-		//#1
-		//double p = ((double)it->second*((double)it->second ) / (size*(size)));
-		//index = p*p;
-		//#2
 		double p = (double)it->second / size;
 		index += p * p;
-		//#3
-		//double p = (double)it->second * (double)it->second;
-		//index += p / size;
 	}
 	return index;
 }

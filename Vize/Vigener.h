@@ -30,10 +30,9 @@ public:
 	unsigned char					shiftForward(unsigned char letter, unsigned char shift);
 	unsigned char					shiftBack(unsigned char letter, unsigned char shift);
 	unsigned char					getModulus(unsigned char a, int modulus);
-	std::vector<unsigned char>		solveEndrypted(std::vector<unsigned char> entext, int keysize);
-
+	std::vector<unsigned char>		solveEndryptedUsingFrequenyAnalyse(const char* filestat, std::vector<unsigned char> entext, int keysize);
+	
 	char							findShiftUsingStatisticsFile(const char* filename);
-	
-	
+	std::vector<unsigned char>		solveEndrypted(const char* filestat, std::vector<unsigned char> entext, int keysize);	
 };
 
