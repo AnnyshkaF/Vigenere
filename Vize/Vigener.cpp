@@ -93,7 +93,7 @@ std::vector<unsigned char> Vigener::selectText(std::vector<unsigned char> text, 
 
 double Vigener::calculateIndexOfCoincidence(std::vector<unsigned char> text)
 {
-	double index = statistics.ÑalculateIndexOfCoincidence(text);
+	double index = statistics.CalculateIndexOfCoincidence(text);
 	return index;
 }
 
