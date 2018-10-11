@@ -9,22 +9,13 @@ Statistics::Statistics()
 		alpha.insert(std::make_pair(unsigned char(symbol), i));
 		symbol++;
 	}
-	/*
-	int j = 0;
-	for (int i = 255; i > -1; i--)
-	{
-		alphabet[j] = unsigned char(i);
-		alpha.insert(std::make_pair(unsigned char(i), j));
-		j++;
-	}
-	*/
 }
 
 Statistics::~Statistics()
 {
 }
 
-std::map<unsigned char, int> Statistics::CalculateStatistics(std::vector<unsigned char> text)
+std::map<unsigned char, int> Statistics::calculateStatistics(std::vector<unsigned char> text)
 {
 	std::map<unsigned char, int> map;
 	int size = text.size();
@@ -41,28 +32,11 @@ std::map<unsigned char, int> Statistics::CalculateStatistics(std::vector<unsigne
 	}
 	return map;
 }
-std::map<unsigned char, int> Statistics::CalculateStatisticsInOrder(std::vector<unsigned char> text)
-{
-	std::map<unsigned char, int> map;
-	int size = text.size();
 
-	for (int i = 0; i < 256; i++)
-	{
-		map.insert(std::pair<unsigned char, int>(alphabet[i], 0));
-	}
-	for (size_t i = 0; i < text.size(); i++)
-	{
-		int tmp = map[text[i]];
-		tmp++;
-		map.insert_or_assign(text[i], tmp);
-	}
-	return map;
-}
-
-double Statistics::ÑalculateIndexOfCoincidence(std::vector<unsigned char> text)
+double Statistics::calculateIndexOfCoincidence(std::vector<unsigned char> text)
 {
-	auto map = CalculateStatistics(text);
-	float index = 0;
+	auto map = calculateStatistics(text);
+	double index = 0;
 	int size = text.size();
 	for (auto it = map.begin(); it != map.end(); ++it)
 	{

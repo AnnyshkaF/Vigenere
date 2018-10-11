@@ -7,9 +7,6 @@
 
 class Vigener
 {
-private:
-	
-
 public:
 						
 	Statistics statistics;			
@@ -17,20 +14,21 @@ public:
 									~Vigener();
 
 	std::vector<unsigned char>		readFromFile(const char* filename);
+	void							writeToFile(const char* filename, std::vector<unsigned char> v);
 	std::vector<unsigned char>		encrypt(std::vector<unsigned char> text, std::vector<unsigned char> key);
 	std::vector<unsigned char>		decrypt(std::vector<unsigned char> text, std::vector<unsigned char> key);
 	std::vector<unsigned char>		selectText(std::vector<unsigned char> text, int step, int start);
 	std::vector<unsigned char>		changeLetters(std::vector<unsigned char> text, int shift, int step, int start);
 	double							calculateIndexOfCoincidence(std::vector<unsigned char> text);
 	int								findKeyLength(std::vector<unsigned char> entext);
-	int								findMaxValue(std::map<int, int> divs);
+	int								findMaxValueInGCDArray(std::map<int, int> divs);
 	int								findMaxDifference(std::map<int, double> divs);
 	int								gcd(int x, int y);
 
 	unsigned char					shiftForward(unsigned char letter, unsigned char shift);
 	unsigned char					shiftBack(unsigned char letter, unsigned char shift);
 	unsigned char					getModulus(unsigned char a, int modulus);
-	std::vector<unsigned char>		solveEndryptedUsingFrequenyAnalyse(const char* filestat, std::vector<unsigned char> entext, int keysize);
+	std::vector<unsigned char>		solveEndryptedUsingFrequencyAnalyse(const char* filestat, std::vector<unsigned char> entext, int keysize);
 	
 	char							findShiftUsingStatisticsFile(const char* filename);
 	std::vector<unsigned char>		solveEndrypted(const char* filestat, std::vector<unsigned char> entext, int keysize);	
