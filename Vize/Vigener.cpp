@@ -1,34 +1,5 @@
 #include "Vigener.h"
 
-
-void showVector(std::vector<unsigned char>& v)
-{
-	for (size_t i = 0; i < v.size(); i++)
-	{
-		std::cout << v[i];
-	}
-	std::cout << std::endl;
-}
-
-void showDifferences(std::vector<unsigned char>& original, std::vector<unsigned char>& restored)
-{
-	if (original.size() != restored.size())
-	{
-		return;
-	}
-	for (size_t i = 0; i < original.size(); i++)
-	{
-		if (original[i] == restored[i])
-		{
-			std::cout << original[i];
-		}
-		else
-		{
-			std::cout << ".";
-		}
-	}
-}
-
 Vigener::Vigener()
 {
 }
@@ -58,7 +29,6 @@ void Vigener::readFromFile(const char* filename, std::vector<unsigned char>& tex
 		std::cout << "Unable to open file.";
 	}
 	file.close();
-	//return text;
 }
 
 void Vigener::writeToFile(const char* filename, std::vector<unsigned char>& v) 
@@ -129,7 +99,7 @@ int Vigener::findKeyLength(std::vector<unsigned char>& entext)
 		std::vector<unsigned char> current_selected_text;
 		selectText(entext, current_selected_text, i + 1, 0);
  		double index = statistics.calculateIndexOfCoincidence(current_selected_text);
-		std::cout << "select_" << i << " = " << index << std::endl;
+		//std::cout << "select_" << i << " = " << index << std::endl;
 		if (index > 0.06) 
 		{
 			return i + 1;
@@ -198,5 +168,31 @@ char Vigener::findShiftUsingStatisticsFile(const char* filename)
 	return max->first;
 }
 
+void showVector(std::vector<unsigned char>& v)
+{
+	for (size_t i = 0; i < v.size(); i++)
+	{
+		std::cout << v[i];
+	}
+	std::cout << std::endl;
+}
 
+void showDifferences(std::vector<unsigned char>& original, std::vector<unsigned char>& restored)
+{
+	if (original.size() != restored.size())
+	{
+		return;
+	}
+	for (size_t i = 0; i < original.size(); i++)
+	{
+		if (original[i] == restored[i])
+		{
+			std::cout << original[i];
+		}
+		else
+		{
+			std::cout << ".";
+		}
+	}
+}
 

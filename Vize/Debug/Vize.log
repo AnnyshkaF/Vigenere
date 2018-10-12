@@ -1,11 +1,3 @@
-﻿  Vigener.cpp
-c:\users\anna\source\repos\vize\vize\vigener.cpp(108): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\anna\source\repos\vize\vize\vigener.cpp(111): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\anna\source\repos\vize\vize\vigener.cpp(114): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\anna\source\repos\vize\vize\vigener.cpp(117): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\anna\source\repos\vize\vize\vigener.cpp(258): warning C4018: '<': signed/unsigned mismatch
-c:\users\anna\source\repos\vize\vize\vigener.cpp(260): warning C4018: '<': signed/unsigned mismatch
-c:\users\anna\source\repos\vize\vize\vigener.cpp(277): warning C4018: '<': signed/unsigned mismatch
-c:\users\anna\source\repos\vize\vize\vigener.cpp(280): warning C4018: '<': signed/unsigned mismatch
-c:\users\anna\source\repos\vize\vize\vigener.cpp(286): warning C4715: 'Vigener::changeLetters': not all control paths return a value
-  Vize.vcxproj -> C:\Users\Anna\source\repos\Vize\Debug\Vize.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Vize.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Vigener.cpp
+  Vize.vcxproj -> C:\Users\Anna\Documents\GitHub\Crypt\Vigenere\Debug\Vigenere.exe
