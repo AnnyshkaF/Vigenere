@@ -1,17 +1,20 @@
 #pragma once
 #include <map>
+#include <vector>
 #include <iostream>
 
 class Statistics
 {
 public:
-	char alphabet[95];
+	std::map<unsigned char, int> alpha;
+	unsigned char alphabet[256];
 
-							Statistics();
-							~Statistics();
-	std::map<char, int>		CalculateStatistics(std::string text);
-	std::string				MakeUpcaseNoSpaces(std::string text);
-	double					ÑalculateIndexOfCoincidence(std::string text);
-	void					ShowStatistics(std::map<char, int> map);
+									Statistics();
+									~Statistics();
+	void							calculateStatistics(const std::vector<unsigned char>& text, std::map<unsigned char, int>& statistics);
+	double							calculateIndexOfCoincidence(const std::vector<unsigned char>& text);
+	unsigned char					getLetter(int number);
+	int								getLetterNumber(unsigned char letter);
+	void							ShowStatistics(const std::map<char, int>& map);
 };
 

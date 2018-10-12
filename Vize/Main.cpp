@@ -4,42 +4,72 @@
 #include <string>
 #include <algorithm>
 
+void showVector (std::vector<unsigned char>& v);
+void showDifferences(std::vector<unsigned char>& original, std::vector<unsigned char>& restored);
+
 int main()
 {
+	const char* filename = "C:/Users/Anna/Desktop/ciphers/text/text3.txt";
+	const char* filestat = "C:/Users/Anna/Desktop/ciphers/statistic/stat10000.txt";
+
+	setlocale(LC_ALL, "Russian");
 	Vigener vigener;
-	//std::string key = "Morning";	//text1: Karmande Armande Armand Andrew Andre Andr And Cat Dog Hello Morning Evening Depp Source (Kn|owledge) Universi|t|y
-	std::string key = "Cat";
-	std::cout << "key = " << key << std::endl;
-	std::string original = vigener.readFromFile("C:/Users/Anna/Desktop/ciphers/text1.txt");	//text2: UniversityKnowledge Know Knowledge Karmande University Know Cat
-
-	std::string entext = vigener.encrypt(original, key);
-	std::string detext = vigener.decrypt(entext, key);
-
-	std::cout << "Original" << std::endl << original << std::endl;
-	//std::cout << "Encrypted" << std::endl << entext << std::endl;
-	//std::cout << "Decrypted" << std::endl << detext << std::endl;
-
-	double indexOfOriginal = vigener.calculateIndexOfCoincidence(original);
-	std::cout << "indexOfOriginal = " << indexOfOriginal << std::endl;
-	double indexOfEncryption = vigener.calculateIndexOfCoincidence(entext);
-	std::cout << "indexOfEncryption = " << indexOfEncryption << std::endl;
-	double indexOfDecryption = vigener.calculateIndexOfCoincidence(detext);
-	std::cout << "indexOfDecryption = " << indexOfDecryption << std::endl;
-
-	int keysize = vigener.findKeyLength(entext);
-	std::cout << "key length = " << keysize << std::endl;
-	//vigener.Checking(entext);
-
-	std::string k;
-	for (int i = 0; i < keysize; ++i)
-	{
-		std::string currentText = vigener.selectText(entext, keysize, i);
-		char c = vigener.findShift(currentText, keysize);
-		k.push_back(c);
-		//std::cout << "step_" << i << " = " << k[i] << std::endl; 
-	}
-	std::string res = vigener.decrypt(entext, k);
-	std::cout << res << std::endl;
 	
+	std::string k = "my name is Anna and I am 20 years old";
+	std::vector<unsigned char> original_key;
+	for (char i : k) 
+	{
+		original_key.push_back(i);
+	}
+
+	std::cout << "Key = ";
+	showVector(original_key);
+
+	std::vector<unsigned char> original;
+	std::vector<unsigned char> entext;
+	std::vector<unsigned char> detext;
+	
+	vigener.readFromFile(filename, original);
+	vigener.encrypt(original, original_key, entext);
+	vigener.decrypt(entext, original_key, detext);
+	
+	std::cout << "Original" << std::endl;
+	showVector(original);
+	
+	std::cout << "Encrypted" << std::endl;
+	showVector(entext);
+	//vigener.writeToFile("C:/Users/Anna/Desktop/ciphers/text/entex.txt", entext);
+	
+	std::cout << "Decrypted" << std::endl;
+	showVector(detext);
+	//vigener.writeToFile("C:/Users/Anna/Desktop/ciphers/text/decr.txt", detext);
+	
+	std::cout << std::endl << "Finding key size" << std::endl;
+	int keysize = vigener.findKeyLength(entext);
+	std::cout << std::endl << "Key size = ";
+	std::cout << keysize;
+
+	std::cout << std::endl  << "Frequency analysis" << std::endl;
+	std::vector<unsigned char> founded_key;
+	vigener.getKey(filestat, entext, keysize, founded_key);
+	std::cout << "Key = ";
+	showVector(founded_key);
+	
+	std::vector<unsigned char> restored;
+	vigener.decrypt(entext, founded_key, restored);
+	std::cout << std::endl << "Restored text" << std::endl;
+	showVector(restored);
 	return 0;
 }
+
+
+
+
+
+
+//text1: Karmande Armande Armand Andrew Andre Andr And Cat Dog Hello Morning Evening Depp Source (Kn|owledge) University Cheerful VeryInteresting
+//text2: UniversityKnowledge Know Knowledge Karmande University Know Cat 
+//text3: Andrew Cat Bad Dog br shady Gas change Kat Tok Try Bye Shady Longer Food Foo Say VeryInteresting Ve Ñêí Bot Stand Sta Wix Entertainment How how old are | my name is Anna and I am 20 years old|
+//text4: Andrew Cat Bad Dog br shady Gas change Kat Tok Try Bye Shady Longer Food Foo Say VeryInteresting Ve Ñêí Bot Stand Sta Wix Entertainment
+//text5: Strange Morning ~Afternoon Changer ~Observation ~Constellation spot (abcdefgh|i) x48kj
+//frequency: ftetx1, ftext2

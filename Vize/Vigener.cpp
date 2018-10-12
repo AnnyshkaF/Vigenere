@@ -1,8 +1,33 @@
 #include "Vigener.h"
-#include <algorithm>  
-#include <list>
-#include <string>
 
+
+void showVector(std::vector<unsigned char>& v)
+{
+	for (size_t i = 0; i < v.size(); i++)
+	{
+		std::cout << v[i];
+	}
+	std::cout << std::endl;
+}
+
+void showDifferences(std::vector<unsigned char>& original, std::vector<unsigned char>& restored)
+{
+	if (original.size() != restored.size())
+	{
+		return;
+	}
+	for (size_t i = 0; i < original.size(); i++)
+	{
+		if (original[i] == restored[i])
+		{
+			std::cout << original[i];
+		}
+		else
+		{
+			std::cout << ".";
+		}
+	}
+}
 
 Vigener::Vigener()
 {
@@ -12,204 +37,160 @@ Vigener::~Vigener()
 {
 }
 
-std::string Vigener::readFromFile(const char* filename) {
+void Vigener::readFromFile(const char* filename, std::vector<unsigned char>& text)
+{
 	std::string line;
-	std::string text;
 	std::ifstream file(filename);
 	if (file.is_open()) 
 	{
 		while (std::getline(file, line)) 
 		{
-			text.append(line);
+			size_t i = 0;
+			while (i < line.length())
+			{
+				text.push_back(line[i]);
+				i++;
+			}
 		}
-		file.close();
 	}
 	else
 	{
 		std::cout << "Unable to open file.";
 	}
-	return text;
+	file.close();
+	//return text;
 }
 
-char Vigener::shiftForward(char letter, int shift)
+void Vigener::writeToFile(const char* filename, std::vector<unsigned char>& v) 
 {
-	char result = letter + shift;
-	while (result < 32)
+	std::ofstream file(filename);
+	if (file.is_open())
 	{
-		result = result - 95;
-	}
-	return result;
-}
-
-char shiftBack(char letter, int shift)
-{
-	char result = letter - shift;
-	while (result < 32)
-	{
-		result = result + 95;
-	}
-	
-	return result;
-}
-
-std::string Vigener::encrypt(std::string text, std::string key)
-{
-	int text_length = text.length();
-	int key_length = key.length();
-	for (int text_var = 0; text_var < text_length;)
-	{
-		for (int key_var = 0; key_var < key_length; key_var++)
+		for (size_t i = 0; i < v.size(); i++)
 		{
-			text[text_var] = shiftForward(text[text_var], key[key_var]);
-			text_var++;
-			if (text_var == text_length)
-			{
-				break;
-			}
+			file << v[i];
 		}
 	}
-	return text;
-}
-
-std::string Vigener::selectText(std::string text, int step, int start) 
-{
-	std::string newText;
-	for (size_t i = start; i < text.length(); i += step)
+	else
 	{
-		newText.push_back(text[i]);
+		std::cout << "Unable to open file";
 	}
-	return newText;
+	file.close();
 }
 
-double Vigener::calculateIndexOfCoincidence(std::string text) 
+unsigned char Vigener::shiftForward(unsigned char letter, unsigned char shift)
 {
-	double index = statistics.calculateIndexOfCoincidence(text);
-	return index;
+	//c[i] = m[i] + k[i] mod(N)
+	int shifting = statistics.getLetterNumber(shift);
+	unsigned char result = statistics.getLetter(getModulus((statistics.getLetterNumber(letter) + shifting), statistics.alpha.size()));
+	return result;
 }
 
-bool isLocalMaximum(std::map<int, float>::iterator it)
+unsigned char Vigener::shiftBack(unsigned char letter, unsigned char shift)
 {
-	--it;
-	float a1 = it->second; ++it;
-	float a2 = it->second; ++it;
-	float a3 = it->second;
-	if (a2 > a1 && a2 > a3)
+	//m[i] = c[i] - k[i] mod(N)
+	int shifting =  statistics.getLetterNumber(shift);
+	unsigned char result = statistics.getLetter(getModulus((statistics.getLetterNumber(letter) - shifting), statistics.alpha.size()));
+	return result ;
+}
+
+void Vigener::encrypt(std::vector<unsigned char>& text, std::vector<unsigned char>& key, std::vector<unsigned char>& entext)
+{
+	int text_length = text.size();
+	int key_length = key.size();
+	for (int i = 0; i < text_length; i++)
 	{
-		return true;
+		entext.push_back(shiftForward(text[i], key[i % key_length]));
 	}
-	return false;
 }
-int Vigener::Checking(std::string entext) 
+
+void Vigener::decrypt(std::vector<unsigned char>& entext, std::vector<unsigned char>& key, std::vector<unsigned char>& detext)
 {
-	int n = entext.length() / 20;
-	for (int i = 1; i < n; i++)
+	int text_length = entext.size();
+	int key_length = key.size();
+	for (int i = 0; i < text_length; i++)
 	{
-		std::string currentSelectedText1 = selectText(entext, i, 0);
-		float ic = calculateIndexOfCoincidence(currentSelectedText1);
+		detext.push_back(shiftBack(entext[i], key[i % key_length]));
+	}
+}
 
-		std::string currentSelectedText2 = selectText(entext, i, 1);
-		float ic2 = calculateIndexOfCoincidence(currentSelectedText2);
+void Vigener::selectText(std::vector<unsigned char>& text, std::vector<unsigned char>& selected_text, int step, int start)
+{
+	for (size_t i = start; i < text.size(); i += step)
+	{
+		selected_text.push_back(text[i]);
+	}
+}
 
-		std::string currentSelectedText3 = selectText(entext, i, 2);
-		float ic3 = calculateIndexOfCoincidence(currentSelectedText3);
-		
-		std::string currentSelectedText4 = selectText(entext, i, 3);
-		float ic4 = calculateIndexOfCoincidence(currentSelectedText4);
-
-		std::cout << "select_" << i << " = " << ic << "\t";
-		std::cout << "select_" << i << " = " << ic2 << "\t";
-		std::cout << "select_" << i << " = " << ic3 << "\t";
-		std::cout << "select_" << i << " = " << ic4 << std::endl;
+int Vigener::findKeyLength(std::vector<unsigned char>& entext)
+{
+	for (size_t i = 0; i < entext.size(); i++)
+	{
+		std::vector<unsigned char> current_selected_text;
+		selectText(entext, current_selected_text, i + 1, 0);
+ 		double index = statistics.calculateIndexOfCoincidence(current_selected_text);
+		std::cout << "select_" << i << " = " << index << std::endl;
+		if (index > 0.06) 
+		{
+			return i + 1;
+		}
 	}
 	return 0;
 }
 
-int Vigener::findKeyLength(std::string entext) 
+unsigned char Vigener::getModulus(unsigned char a, int modulus) 
 {
-	int n = entext.length() / 40;	//min = 512
-	std::map<int, double> map;
-	//calculate ic's
-	for (int i = 0; i < n; i++)
+	if (modulus == 0)
 	{
-		std::string currentSelectedText1 = selectText(entext, i+1, 0);
- 		double ic1 = calculateIndexOfCoincidence(currentSelectedText1);
-		std::string currentSelectedText2 = selectText(entext, i+2, 0);
-		double ic2 = calculateIndexOfCoincidence(currentSelectedText2);
-		std::string currentSelectedText3 = selectText(entext, i+3, 0);
-		double ic3 = calculateIndexOfCoincidence(currentSelectedText3);
-	
-		if (ic2 > ic1 && ic2 > ic3 && ic2 > 0.06) {
-			map.insert(std::pair<int, double>(i+2, ic2));
-		}
-		//std::cout << "select_" << i << " = " << ic1 << std::endl;
+		return a;
 	}
-	if (map.size() != 0)
+	if (a >= 0)
 	{
-		if (map.begin()->first > 5)
+		a = a % modulus;
+	}
+	if(a < 0)
+	{
+		while (a < 0)
 		{
-			return map.begin()->first;
+			a = a + modulus;
 		}
 	}
-	
-	/*	comparison between indexes's Numbers through gcd	*/
-	std::map<int, int> divs;
-	for (auto walker = map.begin(); walker != map.end(); ++walker)
+	return a;
+}
+
+void Vigener::getKey(const char* filestat, std::vector<unsigned char>& entext, int keysize, std::vector<unsigned char>& founded_key)
+{
+	unsigned char max = findShiftUsingStatisticsFile(filestat);
+	for (int i = 0; i < keysize; ++i)
 	{
-		for (auto stayer = map.begin(); stayer != map.end(); ++stayer)
+		std::vector<unsigned char> current_selected_text;
+		selectText(entext, current_selected_text, keysize, i);
+		std::map<unsigned char, int> stat;
+		statistics.calculateStatistics(current_selected_text, stat);
+		//find maximum frequency in encrypted-selected text
+		auto tmp = stat.begin();
+		for (auto it = stat.begin(); it != stat.end(); ++it)
 		{
-			if (walker != stayer) 
+			if (it->second > tmp->second)
 			{
-				int d = gcd(walker->first, stayer->first);
-				auto old = divs.find(d);
-				if (old != divs.end())//element exists
-				{
-					old->second++;
-				}
-				else 
-				{
-					divs.insert(std::pair<int, int>(d, 1));
-				}
+				tmp = it;
 			}
-			
 		}
+		int shift = (getModulus(statistics.getLetterNumber(tmp->first) - statistics.getLetterNumber(max), 256));
+		founded_key.push_back(statistics.getLetter(shift));
 	}
-	int mkey = 0;
-	if (findMaxValue(divs) <= 5) 
-	{
-		//return findMaxValue(divs);
-		int mkey = findMaxValue(divs);
-	}
-	int key = findMaxDifference(map);
-	if (mkey > key) { return mkey; }
-	return key;
 }
 
-int Vigener::findMaxDifference(std::map<int, double> divs)
+char Vigener::findShiftUsingStatisticsFile(const char* filename)
 {
-	double* array = new double[divs.size()];
-	int i = 0, max_index = 0;
-	double max = 0;
-	for (auto it = divs.begin(); it != divs.end(); ++it)
+	std::vector<unsigned char> statistic_text;
+	readFromFile(filename, statistic_text);
+	std::map<unsigned char, int> stat;
+	statistics.calculateStatistics(statistic_text, stat);
+	auto max = stat.begin();
+	for (auto it = stat.begin(); it != stat.end(); ++it)
 	{
-		array[i] = it->second / it->first;
-		if (array[i] > max)
-		{
-			max = array[i];
-			max_index = it->first;
-		}
-	}
-	delete[] array;
-	return max_index;
-}
-
-int Vigener::findMaxValue(std::map<int, int> divs)
-{
-	divs.erase(1);
-	divs.erase(2);
-	std::map<int, int>::iterator max = divs.begin();
-	for (auto it = divs.begin(); it != divs.end(); ++it)
-	{
-		if (it->second > max->second)
+		if (it->second >= max->second)
 		{
 			max = it;
 		}
@@ -217,71 +198,5 @@ int Vigener::findMaxValue(std::map<int, int> divs)
 	return max->first;
 }
 
-int Vigener::gcd(int x, int y)
-{
-	if (x < y)
-	{
-		std::swap(x, y);
-	}
-	while (y > 0)
-	{
-		int f = x % y;
-		x = y;
-		y = f;
-	}
-	return x;
-}
 
-
-
-int Vigener::findShift(std::string text, int step)
-{
-	int max = 0;
-	char shift = 0;
-	Statistics s;
-	auto stat = s.CalculateStatistics(text);
-	for (auto it = stat.begin(); it != stat.end(); ++it)
-	{
-		if (it->second >= max)
-		{
-			max = it->second;
-			shift = it->first;
-		}
-		//std::cout << it->first << " = " << it->second << std::endl;
-	}
-	return shift;
-}
-
-std::string Vigener::decrypt(std::string text, std::string key)
-{
-	int start = 0;
-	for (int text_var = 0; text_var < text.length();)
-	{
-		for (int key_var = 0; key_var < key.length(); key_var++)
-		{
-			text[text_var] = shiftBack(text[text_var], key[key_var]);
-			text_var++;
-			if (text_var == text.length())
-			{
-				break;
-			}
-		}
-	}
-	return text;
-}
-
-std::string Vigener::changeLetters(std::string text, int shift, int stride, int start)
-{
-	Statistics s;
-
-	for (int i = start; i < text.length(); i += stride)
-	{
-		text[i] = shiftBack(text[i], shift);
-		if (i < text.length())
-		{
-			i++;
-		}
-		return text;	//îäèí øàã
-	}
-}
 

@@ -2,10 +2,11 @@
 
 Statistics::Statistics()
 {
-	int symbol = 32;
-	for (int i = 0; i < 95; i++)
+	unsigned char symbol = 0;
+	for (int i = 0; i < 256; i++)
 	{
-		alphabet[i] = char(symbol);
+		alphabet[i] = unsigned char(symbol);
+		alpha.insert(std::make_pair(unsigned char(symbol), i));
 		symbol++;
 	}
 }
@@ -14,63 +15,50 @@ Statistics::~Statistics()
 {
 }
 
-std::string Statistics::MakeUpcaseNoSpaces(std::string text)
+void Statistics::calculateStatistics(const std::vector<unsigned char>& text, std::map<unsigned char, int>& statistics)
 {
-	std::string newString;
-	for (size_t i = 0; i < text.length(); i++)
-	{
-		if (text[i] >= 'a' && text[i] <= 'z')
-		{
-			text[i] -= 32;
-			newString.push_back(text[i]);
-			continue;
-		}
-		if (text[i] >= 'A' && text[i] <= 'Z')
-		{
-			newString.push_back(text[i]);
-		}
-	}
-	return newString;
-}
-
-std::map<char, int> Statistics::CalculateStatistics(std::string text)
-{
-	std::map<char, int> map;
-	int size = text.length();
+	int size = text.size();
 	
-	for (char i = 0; i < 92; i++)
+	for (int i = 0; i < 256; i++)
 	{
-		map.insert(std::pair<char, int>(alphabet[i], 0));
+		statistics.insert(std::pair<unsigned char, int>(alphabet[i], 0));
 	}
-	for (size_t i = 0; i < text.length(); i++)
+	for (size_t i = 0; i < text.size(); i++)
 	{
-		int tmp = map[text[i]];
+		int tmp = statistics[text[i]];
 		tmp++;
-		map.insert_or_assign(text[i], tmp);
+		statistics.insert_or_assign(text[i], tmp);
 	}
-	return map;
 }
 
-double Statistics::ÑalculateIndexOfCoincidence(std::string text)
+double Statistics::calculateIndexOfCoincidence(const std::vector<unsigned char>& text)
 {
-	auto map = CalculateStatistics(text);
-	float index = 0;
-	int size = text.length();
-	std::map<char, int>::iterator it;
-	for (it = map.begin(); it != map.end(); ++it)
+	std::map<unsigned char, int> statistic;
+	calculateStatistics(text, statistic);
+	double index = 0;
+	for (auto it = statistic.begin(); it != statistic.end(); ++it)
 	{
-		//double p = ((double)it->second*(it->second - 1) / (size*(size-1)));
-		double p = (double)it->second / size;
+		double p = (double)it->second / text.size();
 		index += p * p;
 	}
 	return index;
 }
 
-void Statistics::ShowStatistics(std::map<char, int> map)
+void Statistics::ShowStatistics(const std::map<char, int>& map)
 {
-	std::map<char, int>::iterator it;
-	for (it = map.begin(); it != map.end(); ++it)
+	for (auto it = map.begin(); it != map.end(); ++it)
 	{
 		std::cout << it->first << " = " << it->second << std::endl;
 	}
 }
+
+unsigned char Statistics::getLetter(int number)
+{
+	return alphabet[number];
+}
+
+int Statistics::getLetterNumber(unsigned char letter)
+{
+	return alpha.find(letter)->second;
+}
+
