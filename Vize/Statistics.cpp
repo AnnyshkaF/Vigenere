@@ -44,14 +44,6 @@ double Statistics::calculateIndexOfCoincidence(const std::vector<unsigned char>&
 	return index;
 }
 
-void Statistics::ShowStatistics(const std::map<char, int>& map)
-{
-	for (auto it = map.begin(); it != map.end(); ++it)
-	{
-		std::cout << it->first << " = " << it->second << std::endl;
-	}
-}
-
 unsigned char Statistics::getLetter(int number)
 {
 	return alphabet[number];
@@ -62,3 +54,10 @@ int Statistics::getLetterNumber(unsigned char letter)
 	return alpha.find(letter)->second;
 }
 
+void Statistics::ShowStatistics(const std::map<char, int>& map)
+{
+	for (auto it = map.begin(); it != map.end(); ++it)
+	{
+		std::cout << it->first << " = " << it->second << std::endl;
+	}
+}

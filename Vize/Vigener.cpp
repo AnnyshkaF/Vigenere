@@ -50,7 +50,7 @@ void Vigener::writeToFile(const char* filename, std::vector<unsigned char>& v)
 
 unsigned char Vigener::shiftForward(unsigned char letter, unsigned char shift)
 {
-	//c[i] = m[i] + k[i] mod(N)
+	//	c[i] = m[i] + k[i] mod(N)
 	int shifting = statistics.getLetterNumber(shift);
 	unsigned char result = statistics.getLetter(getModulus((statistics.getLetterNumber(letter) + shifting), statistics.alpha.size()));
 	return result;
@@ -58,7 +58,7 @@ unsigned char Vigener::shiftForward(unsigned char letter, unsigned char shift)
 
 unsigned char Vigener::shiftBack(unsigned char letter, unsigned char shift)
 {
-	//m[i] = c[i] - k[i] mod(N)
+	//	m[i] = c[i] - k[i] mod(N)
 	int shifting =  statistics.getLetterNumber(shift);
 	unsigned char result = statistics.getLetter(getModulus((statistics.getLetterNumber(letter) - shifting), statistics.alpha.size()));
 	return result ;
@@ -92,22 +92,6 @@ void Vigener::selectText(std::vector<unsigned char>& text, std::vector<unsigned 
 	}
 }
 
-int Vigener::findKeyLength(std::vector<unsigned char>& entext)
-{
-	for (size_t i = 0; i < entext.size(); i++)
-	{
-		std::vector<unsigned char> current_selected_text;
-		selectText(entext, current_selected_text, i + 1, 0);
- 		double index = statistics.calculateIndexOfCoincidence(current_selected_text);
-		//std::cout << "select_" << i << " = " << index << std::endl;
-		if (index > 0.06) 
-		{
-			return i + 1;
-		}
-	}
-	return 0;
-}
-
 unsigned char Vigener::getModulus(unsigned char a, int modulus) 
 {
 	if (modulus == 0)
@@ -126,6 +110,21 @@ unsigned char Vigener::getModulus(unsigned char a, int modulus)
 		}
 	}
 	return a;
+}
+
+int Vigener::findKeyLength(std::vector<unsigned char>& entext)
+{
+	for (size_t i = 0; i < entext.size(); i++)
+	{
+		std::vector<unsigned char> current_selected_text;
+		selectText(entext, current_selected_text, i + 1, 0);
+		double index = statistics.calculateIndexOfCoincidence(current_selected_text);
+		if (index > 0.06)	//en - 0.06 //ru - 0.05
+		{
+			return i + 1;
+		}
+	}
+	return 0;
 }
 
 void Vigener::getKey(const char* filestat, std::vector<unsigned char>& entext, int keysize, std::vector<unsigned char>& founded_key)

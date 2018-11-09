@@ -10,66 +10,63 @@ void showDifferences(std::vector<unsigned char>& original, std::vector<unsigned 
 int main()
 {
 	const char* filename = "C:/Users/Anna/Desktop/ciphers/text/text3.txt";
-	const char* filestat = "C:/Users/Anna/Desktop/ciphers/statistic/stat10000.txt";
-
+	const char* filestat = "C:/Users/Anna/Desktop/ciphers/statistic/stat100000_1.txt";
+	//const char* filename = "C:/Users/Anna/Desktop/ciphers/text/rutext4.txt";
+	//const char* filestat = "C:/Users/Anna/Desktop/ciphers/statistic/rustat100000_1.txt";
+	
 	setlocale(LC_ALL, "Russian");
 	Vigener vigener;
 	
-	std::string k = "my name is Anna and I am 20 years old";
+	std::string k = "acer";
+	//std::string k = "Проверка";
 	std::vector<unsigned char> original_key;
 	for (char i : k) 
 	{
 		original_key.push_back(i);
 	}
-
-	std::cout << "Key = ";
+	std::cout << "Key ";
+	std::cout <<"size = "<< k.length() <<"\n";
 	showVector(original_key);
 
 	std::vector<unsigned char> original;
 	std::vector<unsigned char> entext;
 	std::vector<unsigned char> detext;
-	
+	std::vector<unsigned char> restored;
+	std::vector<unsigned char> founded_key;
+
 	vigener.readFromFile(filename, original);
 	vigener.encrypt(original, original_key, entext);
 	vigener.decrypt(entext, original_key, detext);
 	
+	int keysize = vigener.findKeyLength(entext);
+	vigener.getKey(filestat, entext, keysize, founded_key);
+	vigener.decrypt(entext, founded_key, restored);
+
+	
 	std::cout << "Original" << std::endl;
 	showVector(original);
-	
+	vigener.writeToFile("C:/Users/Anna/Desktop/original.txt", original);
 	std::cout << "Encrypted" << std::endl;
 	showVector(entext);
-	//vigener.writeToFile("C:/Users/Anna/Desktop/ciphers/text/entex.txt", entext);
-	
+	vigener.writeToFile("C:/Users/Anna/Desktop/entext.txt", entext);
 	std::cout << "Decrypted" << std::endl;
 	showVector(detext);
-	//vigener.writeToFile("C:/Users/Anna/Desktop/ciphers/text/decr.txt", detext);
+	vigener.writeToFile("C:/Users/Anna/Desktop/detext.txt", detext);
 	
 	std::cout << std::endl << "Finding key size" << std::endl;
-	int keysize = vigener.findKeyLength(entext);
 	std::cout << std::endl << "Key size = ";
 	std::cout << keysize;
-
 	std::cout << std::endl  << "Frequency analysis" << std::endl;
-	std::vector<unsigned char> founded_key;
-	vigener.getKey(filestat, entext, keysize, founded_key);
 	std::cout << "Key = ";
 	showVector(founded_key);
-	
-	std::vector<unsigned char> restored;
-	vigener.decrypt(entext, founded_key, restored);
+	/*
 	std::cout << std::endl << "Restored text" << std::endl;
 	showVector(restored);
+	*/
+	
 	return 0;
 }
 
 
 
 
-
-
-//text1: Karmande Armande Armand Andrew Andre Andr And Cat Dog Hello Morning Evening Depp Source (Kn|owledge) University Cheerful VeryInteresting
-//text2: UniversityKnowledge Know Knowledge Karmande University Know Cat 
-//text3: Andrew Cat Bad Dog br shady Gas change Kat Tok Try Bye Shady Longer Food Foo Say VeryInteresting Ve Скн Bot Stand Sta Wix Entertainment How how old are | my name is Anna and I am 20 years old|
-//text4: Andrew Cat Bad Dog br shady Gas change Kat Tok Try Bye Shady Longer Food Foo Say VeryInteresting Ve Скн Bot Stand Sta Wix Entertainment
-//text5: Strange Morning ~Afternoon Changer ~Observation ~Constellation spot (abcdefgh|i) x48kj
-//frequency: ftetx1, ftext2
